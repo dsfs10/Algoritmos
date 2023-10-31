@@ -1,5 +1,5 @@
 #include <stdio.h>
-#define n 6
+#define n 5
 
 void swap(int *A, int pos1, int pos2);
 
@@ -10,7 +10,7 @@ int Partition(int *A, int l, int r);
 
 
 int main() {
-    int A[] = {5, 0, 1, 4, 3, 2};
+    int A[] = {5, 2, 1, 7, 0};
     int l = 0, r = n-1;
 
     Quicksort(A, l, r);
