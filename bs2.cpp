@@ -23,9 +23,9 @@ int main() {
 
 int BinarySearch(int *A, int K) {
     int l = 0, r = n - 1;
-    int m = (l + r) / 2;
 
     while(l <= r) {
+        int m = (l + r) / 2;
         if(K == A[m]) {
             return m;
         }
@@ -36,5 +36,6 @@ int BinarySearch(int *A, int K) {
             l = m + 1;
         }
     }
+
     return -1;
 }
