@@ -60,10 +60,10 @@ int HoarePartition(int *a, int l, int r) {
     do {
         do {
             i = i+1;
-        } while(!(a[i] >= p || i >= r));
+        } while(!(a[i] <= p || i >= r)); // para decrescente troca o >= pra <= no a[i] (o i deixa como ta)
         do {
             j = j-1;
-        } while(!(a[j] <= p));
+        } while(!(a[j] >= p)); // pra decrescente troca o <= pra >=
         
         swap(a, i, j);
     } while(!(i >= j));
