@@ -1,38 +1,47 @@
-#include <stdio.h>
-#include <string.h>
+#include <iostream>
 
-int BinarySearch(char estudante[][], char k[], int e);
+using namespace std;
 
-int main() {
+void BinarySearch(string estudante[], string procura, int e);
+
+int main(void) {
     int e, q;
-    scanf("%d", &e);
-    char estudante[e][31];
-    //char procura[31];
+    cin >> e;
+    string estudante[e];
 
     for(int i = 0; i < e; i++) {
-        scanf(" %s", estudante[i]);
+        cin >> estudante[i];
     }
-    scanf("%d", &q);
+    cin >> q;
 
     for(int i = 0; i < q; i++) {
-        char procura[31];
-        scanf("%s", procura);
+        string procura;
+        cin >> procura;
 
         BinarySearch(estudante, procura, e);
     }
-    
+
+
     return 0;
 }
 
 
-int  BinarySearch(char estudante[][], char k[], int e) {
+void BinarySearch(string estudante[], string procura, int e) {
     int l = 0, r = e - 1;
 
     while(l <= r) {
         int m = (l + r) / 2;
-        if(strcmp(k, estudante[m]) == 0) {
-            return m;
+        if(procura == estudante[m]) {
+            cout << "+" << endl;
+            return;
         }
-        else if()
+        else if(procura < estudante[m]) {
+            r = m - 1;
+        }
+        else {
+            l = m + 1;
+        }
     }
+    cout << "-" << endl;
+    return;
 }
