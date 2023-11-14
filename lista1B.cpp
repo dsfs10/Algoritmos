@@ -6,9 +6,11 @@ void Quicksort(int *a, int l, int r);
 
 int HoarePartition(int *a, int l, int r);
 
+void BinarySearch(int *A, int K, int l, int r, int *s);
 
-int main() {
-    int n, k, o = 0;
+
+int main(void) {
+    int n, k, s = 0;
     scanf("%d %d", &n, &k);
     int a[n], l = 0, r = n - 1;
 
@@ -18,16 +20,13 @@ int main() {
 
     Quicksort(a, l, r);
 
-    for(int i = 0; i < n-1; i++) {
-        for(int j = i+1; j < n; j++) {
-            if((a[i] - a[j]) == k) {
-                o++;
-                break;
-            }
-        }
+    for(int i = 0; i < n; i++) {
+        if(a[i] > k) {    
+            BinarySearch(a, (a[i]-k), l, r, &s);
+        }    
     }
 
-    printf("%d\n", o);
+    printf("%d\n", s);
 
     return 0;
 }
@@ -59,10 +58,10 @@ int HoarePartition(int *a, int l, int r) {
     do {
         do {
             i = i+1;
-        } while(!(a[i] <= p || i >= r)); // para decrescente troca o >= pra <= no a[i] (o i deixa como ta)
+        } while(!(a[i] >= p || i >= r)); // para decrescente troca o >= pra <= no a[i] (o i deixa como ta)
         do {
             j = j-1;
-        } while(!(a[j] >= p)); // pra decrescente troca o <= pra >=
+        } while(!(a[j] <= p)); // pra decrescente troca o <= pra >=
         
         swap(a, i, j);
     } while(!(i >= j));
@@ -72,4 +71,25 @@ int HoarePartition(int *a, int l, int r) {
     swap(a ,l, j);
     
     return j;
+}
+
+
+void BinarySearch(int *A, int K, int l, int r, int *s) {
+    //int l = 0, r = n - 1;
+
+    while(l <= r) {
+        int m = (l + r) / 2;
+        if(K == A[m]) {
+            (*s)++;
+            return;
+        }
+        else if(K < A[m]) {
+            r = m - 1;
+        }
+        else {
+            l = m + 1;
+        }
+    }
+
+    return;
 }
