@@ -1,4 +1,6 @@
-#include "list.h"
+#include <iostream>
+
+using namespace std;
 
 typedef struct list {
     int maxSize; int listSize; int curr; int* listArray;
@@ -58,5 +60,11 @@ void prev(List* l) {
 void next(List* l) {
     if(l->curr < l->listSize) {
         l->curr++;
+    }
+}
+
+void printList(List* l) {
+    for(int i = 0; i < l->listSize; i++) {
+        cout << l->listArray[i] ;
     }
 }
