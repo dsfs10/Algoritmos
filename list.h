@@ -13,6 +13,7 @@ void moveToEnd(List* l);
 void prev(List* l);
 void next(List* l);
 void printList(List* l);
+void currentpos(List* l);
 
 // ...
 #endif
