@@ -68,3 +68,7 @@ void printList(List* l) {
         cout << l->listArray[i] ;
     }
 }
+
+void currentpos(List* l) {
+    cout << l->curr << endl;
+}
