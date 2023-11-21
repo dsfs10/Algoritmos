@@ -4,7 +4,7 @@ using namespace std;
 
 typedef struct link {
     int element; // E type, value stored in this link/node
-    Link* next; // Reference to the next link/node
+    struct link* next; // Reference to the next link/node
 } Link;
 
 typedef struct list {
@@ -49,7 +49,7 @@ void insert(List* l, int it) {
 
 int remove(List* l) {
     if(l->curr->next == NULL) {
-        return NULL;
+        return -1;
     }
     int it = l->curr->next->element;
 
@@ -58,6 +58,7 @@ int remove(List* l) {
     }
     l->curr->next = l->curr->next->next;
     l->cnt--;
+    return it;
 }
 
 void moveToStart(List* l) {
