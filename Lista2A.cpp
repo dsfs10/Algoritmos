@@ -20,13 +20,13 @@ typedef struct list {
 
 List* create_list(); // Creates a new list // Lembrar do 'int size' como parametro para array list
 void clear(List* l);
-void insert(List* l, string item);
+void insert(List* l, char item);
 void remove(List* l);
 void prev(List* l);
 void next(List* l);
 void printList(List* l);
 int count(List* l);
-Link* create_link(string it, Link* nextval);
+Link* create_link(char it, Link* nextval);
 Link* create_link(Link* nextval);
 
 
@@ -35,7 +35,18 @@ int main(void) {
     string input;
 
     while(cin >> input) {
-        
+        for(int i = 0; i < input.size(); i++) {
+            if(input[i] == '[') {
+                l->curr = l->head;
+            }
+            else if(input[i] == ']') {
+                l->curr = l->tail;
+            }
+            else {
+                insert(l, input[i]);
+            }    
+
+        }
     }
 
 
@@ -43,8 +54,8 @@ int main(void) {
 }
 
 
-Link* create_link(string it, Link* nextval) {
-    Link* n = (Link *) new int;
+Link* create_link(char it, Link* nextval) {
+    Link* n = (Link *) new char;
     n->element = it;
     n->next = nextval;
     return n;
@@ -76,8 +87,8 @@ void clear(List* l) {
        delete l;
 }
 
-void insert(List* l, string it) {
-    l->curr->next = create_link(it, l->curr->next);
+void insert(List* l, char item) {
+    l->curr->next = create_link(item, l->curr->next);
     
     if(l->tail == l->curr) {
         l->tail = l->curr->next;
