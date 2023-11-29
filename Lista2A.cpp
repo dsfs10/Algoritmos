@@ -41,14 +41,13 @@ int main(void) {
                 insert(l, input[i]);
                 next(l);
             }    
-
         }
         printList(l);
-        //l->curr = l->tail;
-        clear(l); // O problema ta no remove
+        l->curr = l->head;
+        clear(l);
     }
 
-
+    clear(l);
     return 0;
 }
 
@@ -89,6 +88,8 @@ void insert(List* l, char item) {
 }
 
 void remove(List* l) {
+    Link* tmp = l->curr->next;
+
     if(l->curr->next == NULL) {
         return;
     }
@@ -99,6 +100,7 @@ void remove(List* l) {
     }
     l->curr->next = l->curr->next->next;
     l->cnt--;
+    delete tmp;
     //return it;
 }
 
