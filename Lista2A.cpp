@@ -2,12 +2,8 @@
 
 using namespace std;
 
-typedef struct {
-    int n;
-} Case;
-
 typedef struct link {
-    string element; // E type, value stored in this link/node
+    char element; // E type, value stored in this link/node
     struct link* next; // Reference to the next link/node
 } Link;
 
@@ -25,7 +21,6 @@ void remove(List* l);
 void prev(List* l);
 void next(List* l);
 void printList(List* l);
-int count(List* l);
 Link* create_link(char it, Link* nextval);
 Link* create_link(Link* nextval);
 
@@ -35,7 +30,7 @@ int main(void) {
     string input;
 
     while(cin >> input) {
-        for(int i = 0; i < input.size(); i++) {
+        for(unsigned int i = 0; i < input.size(); i++) {
             if(input[i] == '[') {
                 l->curr = l->head;
             }
@@ -44,9 +39,13 @@ int main(void) {
             }
             else {
                 insert(l, input[i]);
+                next(l);
             }    
 
         }
+        printList(l);
+        //l->curr = l->tail;
+        clear(l); // O problema ta no remove
     }
 
 
@@ -62,29 +61,22 @@ Link* create_link(char it, Link* nextval) {
 }
 
 Link* create_link(Link* nextval) {
-    Link* n = (Link *) new int;
+    Link* n = (Link *) new char;
     n->next = nextval;
     return n;
 }
 
 List* create_list() {
-    List* l = (List *) new int;
+    List* l = (List *) new char;
     l->curr = l->tail = l->head = create_link(NULL); // header node
     l->cnt = 0;
     return l;
 }
 
 void clear(List* l) {
-       Link *temp = l->head;
-       Link *next = temp->next;
-
-       while(temp->next != NULL) {
-        next = temp->next;
-        delete temp;
-        temp = next;
-       }
-       delete temp;
-       delete l;
+    while(l->cnt != 0) {
+        remove(l);
+    }
 }
 
 void insert(List* l, char item) {
@@ -126,5 +118,13 @@ void prev(List* l) {
 void next(List* l) {
     if(l->curr != l->tail) {
         l->curr = l->curr->next;
+    }
+}
+
+void printList(List* l) {
+    Link *tmp = l->head;
+    while(tmp->next != NULL){
+        cout << tmp->next->element;
+        tmp = tmp->next;
     }
 }
