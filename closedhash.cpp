@@ -22,6 +22,7 @@ int Find(Dictionary* d, int k);
 Dictionary* create_dict(int size, int (*h)(string k, int m));
 Entry create_entry(string key, int index);
 void insert(Dictionary* d, string key, int index); // E type (string)
+string remove(Dictionary* d, string key);
 
 
 int main(void) {
@@ -48,8 +49,21 @@ int* create_perm(int size) {
     return p; 
 }
 
-int Find(Dictionary* d, string k) {
+int Find(Dictionary* d, string key) {
+    int i = h(key, d->m);
+    if(!(d->H[i].Key.empty()) && d->H[i].Key == key) {
+        return i;
+    }
+    int tmp = i;
 
+    for(int j = 0; j < d->m - 1; j++) {
+        tmp = (i + d->Perm[i]) % d->m;
+        if(!(d->H[tmp].Key.empty()) && d->H[tmp].Key == key) {
+            return tmp;
+        }
+    }
+
+    return -1;
 }
 
 Dictionary* create_dict(int size, int (*h)(string k, int m)) {
@@ -87,4 +101,16 @@ void insert(Dictionary* d, string key, int index) {
         d->H[pos] = entry;
         d->cnt++;   
     }
+}
+
+string remove(Dictionary* d, string key) {
+    int i = Find(d, key);
+
+    if(i != -1) {
+        string tmp = d->H[i].Key;
+        d->H[i].Key = NULL;
+        return tmp;
+    }
+    
+    return;
 }
