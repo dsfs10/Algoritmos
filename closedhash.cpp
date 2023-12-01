@@ -3,8 +3,8 @@ using namespace std;
 #define endl "\n"
 
 typedef struct {
-    int Key; // N sei o tipo
-    string E;// Value E, n sei como implementar ainda
+    string Key; // N sei o tipo
+    int index;// Value E, n sei como implementar ainda
 } Entry;
 
 typedef struct {
@@ -15,16 +15,13 @@ typedef struct {
     int (*h)(string K, int m);
 } Dictionary;
 
-typedef struct {
-    
-} Key;
 
 int h(string K, int m);
 int* create_perm(int size);
 int Find(Dictionary* d, int k);
-Dictionary* create_dict(int size, int h());
-Entry create_entry(int key, string e);
-void insert(Dictionary* d, int k, string e); // E type (string)
+Dictionary* create_dict(int size, int (*h)(string k, int m));
+Entry create_entry(string key, int index);
+void insert(Dictionary* d, string key, int index); // E type (string)
 
 
 int main(void) {
@@ -51,31 +48,31 @@ int* create_perm(int size) {
     return p; 
 }
 
-int Find(Dictionary* d, int k) {
+int Find(Dictionary* d, string k) {
 
 }
 
-Dictionary* create_dict(int size, int h()) {
+Dictionary* create_dict(int size, int (*h)(string k, int m)) {
     Dictionary* d = (Dictionary *) new int;
     d->m = size;
     d->cnt = 0;
     d->H = (Entry *) new Entry[size];
     d->Perm = create_perm(size); // 1..size-1
-    d->h = h(); // ?!
+    //d->h = h(); // ?!
     return d;
 }
 
-Entry create_entry(int key, string e) {
+Entry create_entry(string key, int index) {
     Entry ent;
-    ent.E = e;
+    ent.index = index;
     ent.Key = key;
     return ent;
 }
 
-void insert(Dictionary* d, int k, string e) {
-    if(d->cnt < d->m && Find(d, k) == NULL) {
-        int pos = d->h(e, d->m); // h is the hash function
-        if(!(d->H[pos].E.empty()) && d->H[pos].E != "deleted") {
+void insert(Dictionary* d, string key, int index) {
+    if(d->cnt < d->m && Find(d, key) == NULL) {
+        int pos = d->h(key, d->m); // h is the hash function
+        if(!(d->H[pos].Key.empty()) && d->H[pos].Key != "deleted") {
             int i = 0;
             int offset; // deslocamento
             int newPos;
@@ -83,10 +80,10 @@ void insert(Dictionary* d, int k, string e) {
                 i = i + 1;
                 offset = d->Perm[i-1];
                 newPos = (pos + offset) % d->m;
-            } while(!(d->H[newPos].E.empty() || d->H[newPos].E == "deleted"));
+            } while(!(d->H[newPos].Key.empty() || d->H[newPos].Key == "deleted"));
             pos = newPos;
         }
-        Entry entry = create_entry(k, e);
+        Entry entry = create_entry(key, index);
         d->H[pos] = entry;
         d->cnt++;   
     }
