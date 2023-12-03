@@ -1,4 +1,5 @@
 #include <iostream>
+#define endl "\n"
 
 using namespace std;
 
@@ -43,6 +44,7 @@ int main(void) {
             }    
         }
         printList(l);
+        cout << endl;
         l->curr = l->head;
         clear(l);
     }
