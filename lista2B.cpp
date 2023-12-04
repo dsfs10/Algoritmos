@@ -1,4 +1,5 @@
 #include <iostream>
+#define endl "\n"
 
 using namespace std;
 
@@ -15,12 +16,12 @@ typedef struct stack {
 
 void clear(Stack* s);
 void push(Stack* s, char it);
-void printStack();
-int pop(Stack* s);
-int topValue(Stack* s);
+char pop(Stack* s);
+char topValue(Stack* s);
 int length(Stack* s);
 Stack* create_stack();
 Link* create_link(char it, Link* nextval);
+void printStack(Stack* s);
 
 
 int main(void) {
@@ -29,17 +30,24 @@ int main(void) {
     cin >> input;
 
     for(unsigned int i = 0; i < input.size(); i++) {
-        if(input[i] == 'C' && input[i-1] == 'B' && input[i-2] == 'A') {
-            for(int j = 0; j < 3; j++) {
-                pop(s);
-            }
+        if(s->size > 0 && topValue(s) == 'A') {
+            push(s, input[i]);
+            if(topValue(s) == 'B') {
+                i++;
+                push(s, input[i]);
+                if(topValue(s) == 'C') {
+                    for(int j = 0; j < 3; j++) {
+                        pop(s);
+                    }
+                }
+            }   
         }
         else {
             push(s, input[i]);
         }
     }
-
-    printStack();
+    
+    printStack(s);
 
     return 0;
 }
@@ -56,20 +64,12 @@ void push(Stack* s, char it) {
     s->size++;
 }
 
-void printStack(Stack* s) {
-    Link *tmp = s->top;
-    while(tmp->next != NULL){
-        cout << tmp->next->element;
-        tmp = tmp->next;
-    }
-}
-
-int pop(Stack* s) {
+char pop(Stack* s) {
     Link* t = s->top;
     if(s->top == NULL) {
-        return -1; // Error
+        exit(1); // Error
     }
-    int pop = s->top->element;
+    char pop = s->top->element;
     s->top = s->top->next;
     s->size--;
     delete t;
@@ -77,7 +77,7 @@ int pop(Stack* s) {
     return pop;
 }
 
-int topValue(Stack* s) {
+char topValue(Stack* s) {
     return s->top->element;
 }
 
@@ -93,8 +93,25 @@ Stack* create_stack() {
 }
 
 Link* create_link(char it, Link* nextval) {
-    Link* n = (Link *) new int;
+    Link* n = (Link *) new char;
     n->element = it;
     n->next = nextval;
     return n;
+}
+
+void printStack(Stack* s) {
+    char aux[s->size];
+    int i = (s->size - 1);
+    int tam = s->size;
+
+    while(s->size != 0) {
+        aux[i] = s->top->element;
+        pop(s);
+        i--;
+    }
+
+    for(int j = 0; j < tam; j++) {    
+        cout << aux[j];
+    }
+    cout << endl;    
 }
