@@ -42,6 +42,16 @@ int main(void) {
                 }
             }   
         }
+        else if(s->size > 1 && topValue(s) == 'B') {
+            pop(s);
+            if(topValue(s) == 'A' && input[i] == 'C') {
+                pop(s);
+            }
+            else {
+                push(s, 'B');
+                push(s, input[i]);
+            }
+        }
         else {
             push(s, input[i]);
         }
