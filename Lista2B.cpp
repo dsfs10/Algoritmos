@@ -29,17 +29,13 @@ int main(void) {
     Stack* s = create_stack();
     cin >> input;
 
-    for(unsigned int i = 0; i <= input.size(); i++) {
+    for(unsigned int i = 0; i < input.size(); i++) {
+        push(s, input[i]);
+
         if(s->size >= 3 && s->top->element == 'C' && s->top->next->element == 'B' && s->top->next->next->element == 'A') {
             for(int j = 0; j < 3; j++) {
                 pop(s);
-            }
-            if(i != input.size()) {
-                push(s, input[i]);
-            }    
-        } 
-        else {
-            push(s, input[i]);
+            }                
         }
     }
 
