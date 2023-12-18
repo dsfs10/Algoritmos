@@ -19,14 +19,32 @@ typedef struct {
 int h(string K, int m);
 int* create_perm(int size);
 int Find(Dictionary* d, string k);
-Dictionary* create_dict(int size, int (*h)(string k, int m));
+Dictionary* create_dict(int size);
 Entry create_entry(string key, int index);
 void insert(Dictionary* d, string key, int index); // E type (string)
 string remove(Dictionary* d, string key);
 
 
 int main(void) {
-    
+    int t, n;
+    string comando;
+    Dictionary* d = create_dict(101);
+    cin >> t;
+
+    for(int i = 0; i < t; i++) {
+        n = 0;
+        cin >> n;
+
+        for(int j = 0; j < n; j++) {
+            cin >> comando;
+            if(comando == "ADD:") {
+                insert(d, comando.substr(4, comando.size() - 1));
+            }
+            else if(comando == "DEL:") {
+                remove(d, comando.substr(4, comando.size() - 1));
+            }
+        }
+    }
     
     
     return 0;
@@ -38,10 +56,10 @@ int h(string K, int m) {
     int sum = 0;
 
     for(int i = 0; i <= s-1; i++) {
-        sum = sum + K[i];
+        sum = sum + K[i]*i;
     }
 
-    return abs(sum) % m; // abs = overflow and % 
+    return abs(19*sum) % m; // abs = overflow and % 
 }
 
 int* create_perm(int size) {
@@ -66,7 +84,7 @@ int Find(Dictionary* d, string key) {
     return -1;
 }
 
-Dictionary* create_dict(int size, int (*h)(string k, int m)) {
+Dictionary* create_dict(int size) {
     Dictionary* d = (Dictionary *) new int;
     d->m = size;
     d->cnt = 0;
@@ -108,7 +126,7 @@ string remove(Dictionary* d, string key) {
 
     if(i != -1) {
         string tmp = d->H[i].Key;
-        d->H[i].Key = nullptr; // ????
+        d->H[i].Key = "deleted"; // ????
         return tmp;
     }
     
