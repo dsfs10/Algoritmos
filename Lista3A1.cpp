@@ -3,8 +3,8 @@ using namespace std;
 #define endl "\n"
 
 typedef struct {
-    string Key; // N sei o tipo
-    int index;// Value E, n sei como implementar ainda
+    string Key;
+    int index;
 } Entry;
 
 typedef struct {
@@ -25,10 +25,10 @@ string remove(Dictionary* d, string key);
 int main(void) {
     int t, n;
     string comando;
-    Dictionary* d = create_dict(101);
     cin >> t;
 
     for(int i = 0; i < t; i++) {
+        Dictionary* d = create_dict(101);
         n = 0;
         cin >> n;
 
@@ -59,11 +59,9 @@ int main(void) {
 int h(string K, int m) {
     int s = K.size();
     int sum = 0;
-    int j = 1;
 
     for(int i = 0; i <= s-1; i++) {
-        sum = sum + K[i]*j;
-        j++;
+        sum = sum + K[i]*(i+1);
     }
 
     return abs(19*sum) % m; // abs = overflow and % 
@@ -76,7 +74,7 @@ int Find(Dictionary* d, string key) {
     }
     int tmp = i;
 
-    for(int j = 1; j < 19; j++) {
+    for(int j = 1; j <= 19; j++) {
         tmp = (h(key, d->m) + (j*j) + 23*j) % 101;
         if(!(d->H[tmp].Key.empty()) && d->H[tmp].Key == key) {
             return tmp;
