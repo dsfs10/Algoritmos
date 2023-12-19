@@ -11,8 +11,6 @@ typedef struct {
     int m; // size of the hash tables
     int cnt; // number of elements in the dictionary
     Entry* H; // hash table as an array of Entry
-    int* Perm; // permutation of 1..m-1
-    //int (*h)(string K, int m);
 } Dictionary;
 
 
@@ -43,9 +41,10 @@ int main(void) {
                 remove(d, comando.substr(4, comando.size() - 4));
             }
         }
+        
         cout << d->cnt << endl;
         for(int i = 0; i < d->m; i++) {
-            if(!(d->H[i].Key.empty())) {
+            if(!(d->H[i].Key.empty()) && d->H[i].Key != "deleted") {
                 cout << d->H[i].index << ":" << d->H[i].Key << endl;
             }
         }
@@ -60,9 +59,11 @@ int main(void) {
 int h(string K, int m) {
     int s = K.size();
     int sum = 0;
+    int j = 1;
 
     for(int i = 0; i <= s-1; i++) {
-        sum = sum + K[i]*i;
+        sum = sum + K[i]*j;
+        j++;
     }
 
     return abs(19*sum) % m; // abs = overflow and % 
@@ -90,8 +91,6 @@ Dictionary* create_dict(int size) {
     d->m = size;
     d->cnt = 0;
     d->H = (Entry *) new Entry[size];
-    //d->Perm = create_perm(size); // 1..size-1
-    //d->h = h(); // ?!
     return d;
 }
 
@@ -107,11 +106,9 @@ void insert(Dictionary* d, string key) {
         int pos = h(key, d->m); // h is the hash function
         if(!(d->H[pos].Key.empty()) && d->H[pos].Key != "deleted") {
             int i = 0;
-            //int offset; // deslocamento
             int newPos;
             do {
                 i = i + 1;
-                //offset = d->Perm[i-1];
                 newPos = (h(key, d->m) + (i*i) + 23*i) % 101;
             } while(!(d->H[newPos].Key.empty() || d->H[newPos].Key == "deleted" || i == 19));
             pos = newPos;
@@ -127,7 +124,8 @@ string remove(Dictionary* d, string key) {
 
     if(i != -1) {
         string tmp = d->H[i].Key;
-        d->H[i].Key = "deleted"; // ????
+        d->H[i].Key = "deleted";
+        d->cnt--;
         return tmp;
     }
     
