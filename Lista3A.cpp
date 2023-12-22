@@ -105,18 +105,21 @@ Entry create_entry(string key, int index) {
 void insert(Dictionary* d, string key) {
     if(d->cnt < d->m && Find(d, key) == -1) {
         int pos = h(key, d->m); // h is the hash function
+        int i = 0;
         if(d->H[pos].index != -1 && d->H[pos].Key != "deleted") {
-            int i = 0;
             int newPos;
             do {
                 i = i + 1;
+                if(i == 20) {
+                    return;
+                }
                 newPos = (h(key, d->m) + (i*i) + 23*i) % 101;
-            } while(!(d->H[newPos].index == -1 || d->H[newPos].Key == "deleted" || i == 19));
+            } while(!(d->H[newPos].index == -1 || d->H[newPos].Key == "deleted"));
             pos = newPos;
         }
         Entry entry = create_entry(key, pos);
         d->H[pos] = entry;
-        d->cnt++;   
+        d->cnt++;      
     }
 }
 
