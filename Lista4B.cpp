@@ -3,8 +3,6 @@
 using namespace std;
 
 
-
-//void insert(Heap* hp, int k, int e);
 int remove(int* hp, int n);
 void HeapBottomUp(int* array, int n);
 void Heapsort(int* hp, int n);
@@ -15,7 +13,7 @@ int Sum(int* hp, int n);
 int main(void) {
     int n;
 
-    while(n =! 0) {
+    while(n != 0) {
         cin >> n;
 
         if(n == 0) {
@@ -28,18 +26,13 @@ int main(void) {
         }
 
         HeapBottomUp(hp, n);
-        Sum(hp, n);
+        cout << Sum(hp, n) << endl;
     }
     
     
     
     return 0;
 }
-
-// void insert(Heap* hp, int k, int e) {
-//     hp->root = inserthelp(hp->root, k, e);
-//     hp->nodecount++;
-// }
 
 int remove(int* hp, int n) {
     if(n > 0 && hp != NULL) {    
@@ -100,10 +93,21 @@ void Heapsort(int* hp, int n) { // for min heap
 }
 
 int Sum(int* hp, int n) {
+    int sum = 0;
+    int cost = 0;
+    int final_cost = 0;
+    int size = n;
     for(int i = 0; i < n; i++) {
-        
+        int min = remove(hp, size);
+        size--;
+        sum = min + sum;
+        if(i > 0) {    
+            cost = sum;
+            final_cost = cost + final_cost;
+        }    
     }
-    int min = remove(hp, n);
+    
+    return final_cost;
 }
 
 void PrintHeap(int* hp, int n) {
