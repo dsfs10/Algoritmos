@@ -30,7 +30,6 @@ int main(void) {
     }
     
     
-    
     return 0;
 }
 
@@ -93,21 +92,17 @@ void Heapsort(int* hp, int n) { // for min heap
 }
 
 int Sum(int* hp, int n) {
-    int sum = 0;
     int cost = 0;
-    int final_cost = 0;
     int size = n;
-    for(int i = 0; i < n; i++) {
+    for(int i = n; i > 1; i--) {
         int min = remove(hp, size);
-        size--;
-        sum = min + sum;
-        if(i > 0) {    
-            cost = sum;
-            final_cost = cost + final_cost;
-        }    
+        size--;        
+        hp[1] = min + hp[1];
+        cost = hp[1] + cost;
+        HeapBottomUp(hp, size);   
     }
     
-    return final_cost;
+    return cost;
 }
 
 void PrintHeap(int* hp, int n) {
