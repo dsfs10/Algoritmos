@@ -1,0 +1,36 @@
+Uma indústria automobilística deseja armazenar as informações das cores mais requisitadas por modelo. Você como programador sabe que uma forma eficiente de guardar e acessar essas informações é usar uma AVL. O seu objetivo será mostrar, em pós-ordem, os modelos e as cores correspondentes que foram inseridas na AVL. Só será inserido na AVL a cor mais produzida por modelo.
+Input Specification 
+
+Será dado, inicialmente, o número n de modelos a serem analisados. Após isso, será fornecido o modelo , um vetor com as quantidades de carros vendidos desse modelo (o último valor do vetor sempre será -1 e só servirá para indicar o final do input) e um vetor com as cores correspondentes (na mesma ordem do vetor de quantidades). 
+
+Output Specification 
+
+Printar, em pós-ordem, os modelos e as respectivas cores que foram inseridas na AVL.
+Obs: não terá números repetidos na AVL. 
+
+Sample Input 
+
+5
+Audi
+18 40 37 73 20 61 -1
+amarela vermelha cinza prata azul verde 
+Mercedes
+14 30 39 92 12 -1
+laranja cinza azul dourada preta
+BMW
+15 83 74 63 -1
+vermelha preta verde cinza 
+Volvo
+60 7 11 -1
+branco preto cinza
+Ferrari
+30 -1
+vermelha 
+
+Sample Output 
+
+Ferrari vermelha
+Audi prata
+Volvo branco
+Mercedes dourada
+BMW preta
