@@ -6,6 +6,7 @@ typedef struct bstnode {
     int key;
     int element;
     int height;
+    int rank = 1; // number of elements to the left
     struct bstnode* left; // left child
     struct bstnode* right; // right child
 } BSTNode;
@@ -24,7 +25,7 @@ BSTNode* removehelp(BSTNode* rt, int k);
 BSTNode* getmin(BSTNode* rt);
 BSTNode* deletemin(BSTNode* rt);
 int find(BST* bst, int k);
-int findhelp(BSTNode* rt, int k);
+int findhelp(BSTNode* rt, int k, BSTNode* parent);
 void preorder(BSTNode* rt);
 void inorder(BSTNode* rt);
 void posorder(BSTNode* rt);
@@ -53,7 +54,7 @@ int main(void) {
             int index = find(avl, key);
             
             if(index != -1) {
-                
+                cout << index << endl;
             }
             else {
                 cout << "Data tidak ada" << endl;
@@ -93,6 +94,7 @@ BSTNode* inserthelp(BSTNode* rt, int k, int e) {
     }
     
     if(rt->key > k) {
+        rt->rank++;
         rt->left = inserthelp(rt->left, k, e);
     }
     else {
@@ -120,8 +122,8 @@ BSTNode* inserthelp(BSTNode* rt, int k, int e) {
 }
 
 int remove(BST* bst, int k) { // not complete
-    int temp = findhelp(bst->root, k);
-    if(temp != NULL) {
+    int temp = findhelp(bst->root, k, bst->root);
+    if(temp != -1) {
         bst->root = removehelp(bst->root, k);
         bst->nodecount--;
     }
@@ -191,22 +193,30 @@ BSTNode* deletemin(BSTNode* rt) {
 }
 
 int find(BST* bst, int k) {
-    return findhelp(bst->root, k);
+    return findhelp(bst->root, k, bst->root);
 }
 
-int findhelp(BSTNode* rt, int k) {
+int findhelp(BSTNode* rt, int k, BSTNode* parent) {
     if(rt == NULL) {
         return -1;
     }
 
     if(rt->key > k) {
-        return findhelp(rt->left, k);
+        return findhelp(rt->left, k, rt);
     }
     else if(rt->key == k) {
-        return rt->element;
+        int index;
+        if(rt->element != parent->element) {    
+            index = rt->rank + parent->rank;
+        }
+        else {
+            index = rt->rank;
+        }
+
+        return index;
     }
     else {
-        return findhelp(rt->right, k);
+        return findhelp(rt->right, k, rt);
     }
 }
 
@@ -237,6 +247,7 @@ void posorder(BSTNode* rt) {
 BSTNode* rightRotate(BSTNode* rt) {
     BSTNode* l = rt->left;
     BSTNode* lr = l->right;
+    rt->rank = rt->rank - rt->left->rank;
     l->right = rt;
     rt->left = lr;
     rt->height = max(h(rt->left), h(rt->right)) + 1;
@@ -248,6 +259,7 @@ BSTNode* rightRotate(BSTNode* rt) {
 BSTNode* leftRotate(BSTNode* rt) {
     BSTNode* r = rt->right;
     BSTNode* rl = r->left;
+    rt->right->rank++;
     r->left = rt;
     rt->right = rl;
     rt->height = max(h(rt->left), h(rt->right)) + 1;
