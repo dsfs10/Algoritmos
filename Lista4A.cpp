@@ -206,7 +206,7 @@ int findhelp(BSTNode* rt, int k, BSTNode* parent) {
     }
     else if(rt->key == k) {
         int index;
-        if(rt->element != parent->element) {    
+        if(rt->element != parent->element && parent->element < rt->element) {    
             index = rt->rank + parent->rank;
         }
         else {
