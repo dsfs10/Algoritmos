@@ -23,7 +23,7 @@ BSTNode* inserthelp(BSTNode* rt, int k, int e);
 BSTNode* getmin(BSTNode* rt);
 BSTNode* deletemin(BSTNode* rt);
 int find(BST* bst, int k, int rank, int root);
-int findhelp(BSTNode* rt, int k, int rank, int root, int parent);
+int findhelp(BSTNode* rt, int k, int rank, int root);
 void preorder(BSTNode* rt);
 void inorder(BSTNode* rt);
 void posorder(BSTNode* rt);
@@ -138,10 +138,10 @@ BSTNode* deletemin(BSTNode* rt) {
 }
 
 int find(BST* bst, int k, int rank, int root) {
-    return findhelp(bst->root, k, rank, root, bst->root->key);
+    return findhelp(bst->root, k, rank, root);
 }
 
-int findhelp(BSTNode* rt, int k, int rank, int root, int parent) {
+int findhelp(BSTNode* rt, int k, int rank, int root) {
     if(rt == NULL) {
         return -1;
     }
@@ -151,16 +151,18 @@ int findhelp(BSTNode* rt, int k, int rank, int root, int parent) {
             rank--;
         }
         else if(rt->left != NULL) {
-            rank = rt->left->rank;
+            if(rt->right == NULL) {
+                rank--;
+            }
+            else {
+                rank = rt->left->rank;
+            }    
         }
     
-        return findhelp(rt->left, k, rank, root, rt->key);
+        return findhelp(rt->left, k, rank, root);
     }
     else if(rt->key == k) {
-        if(rt->key < root && rt->key < parent && rt->left == NULL && rt->right == NULL) {
-            rank = rt->rank;
-        }
-        else if(rt->key == root) {
+        if(rt->key == root) {
             rank = rt->rank;
         }
         return rank;
@@ -169,7 +171,7 @@ int findhelp(BSTNode* rt, int k, int rank, int root, int parent) {
         if(rt->right != NULL) {   
             rank = rank + rt->right->rank;
         }
-        return findhelp(rt->right, k, rank, root, rt->key);
+        return findhelp(rt->right, k, rank, root);
     }
 }
 
