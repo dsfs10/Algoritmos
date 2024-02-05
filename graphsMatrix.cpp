@@ -54,10 +54,13 @@ int main(void) {
 }
 
 
-G* create_graph(const int n) {
+G* create_graph(int n) {
     G* g = new G;
     g->Mark = new int[n];
-    g->matrix = new int[n][n];
+    g->matrix = new int*[n];
+    for(int i = 0; i < n; i++) {
+        g->matrix[i] = new int;
+    }
     g->numEdge = 0;
     return g;
 }
@@ -94,6 +97,7 @@ void graphTraverse(G* g, string traverse) {
     for(int v = 0; v <= (n(g)-1); v++) {
         setMark(g, v, UNVISITED);
     }
+
     for(int v = 0; v <= (n(g)-1); v++) {
         if(getMark(g, v) == UNVISITED) {
             if(traverse == "BFS") {
