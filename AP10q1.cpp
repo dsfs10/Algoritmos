@@ -48,16 +48,37 @@ Link* create_link(Link* nextval);
 
 
 int main(void) {
-    
+    int n, q;
+    cin >> n;
+    cin >> q;
+    G* g = create_graph(n);
+
+    for(int i = 0; i < q; i++) {
+        string comando;
+        cin >> comando;
+
+        if(comando == "add") {
+
+        }
+        else if(comando == "BFS") {
+            graphTraverse(g, "BFS");
+        }
+        else if(comando == "DFS") {
+            graphTraverse(g, "DFS");
+        }
+    }
 
     return 0;
 }
 
 
-G* create_graph(const int n) {
+G* create_graph(int n) {
     G* g = new G;
     g->Mark = new int[n];
-    g->matrix = new int[n][n];
+    g->matrix = new int*[n];
+    for(int i = 0; i < n; i++) {
+        g->matrix[i] = new int;
+    }
     g->numEdge = 0;
     return g;
 }
@@ -94,7 +115,9 @@ void graphTraverse(G* g, string traverse) {
     for(int v = 0; v <= (n(g)-1); v++) {
         setMark(g, v, UNVISITED);
     }
-    for(int v = 0; v <= (n(g)-1); v++) {
+    int c;
+    cin >> c;
+    for(int v = c; v <= (n(g)-1); v++) {
         if(getMark(g, v) == UNVISITED) {
             if(traverse == "BFS") {
                 BFS(g, v);
