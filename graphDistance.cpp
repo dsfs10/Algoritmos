@@ -28,7 +28,8 @@ void delEdge(G* g, int i, int j);
 bool isEdge(G* g, int i, int j);
 int weight(G* g, int i, int j);
 void setMark(G* g, int v, int val);
-int getMark(G* g, int v); 
+int getMark(G* g, int v);
+int distance(G* g, int v); 
 
 
 int main(void) {
@@ -147,6 +148,7 @@ void BFS(G* g, int start) {
                 setMark(g, w, VISITED);
                 Q.push(w);
             }
+            g->distance[w] = g->distance[v] + 1;
             w = next(g, v, w);
         }
         //posVisit(g, v); do something after visiting the vertex
@@ -187,4 +189,8 @@ void setMark(G* g, int v, int val) {
 
 int getMark(G* g, int v) {
     return g->Mark[v];
+}
+
+int distance(G* g, int v) {
+    return g->distance[v];
 }
