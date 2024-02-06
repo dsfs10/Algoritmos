@@ -26,9 +26,9 @@ void BFS(G* g, int start);
 void setEdge(G* g, int i, int j, int wt);
 void delEdge(G* g, int i, int j);
 bool isEdge(G* g, int i, int j);
-int weight(G* g, int i, int j);
 void setMark(G* g, int v, int val);
-int getMark(G* g, int v); 
+int getMark(G* g, int v);
+void toposort(G* g, int v, Stack s); 
 
 
 int main(void) {
@@ -54,9 +54,9 @@ G* create_graph(int n) {
     g->n = n;
     g->Mark = new int[n];
     g->l = new list<int>[n];
-    for(int i = 0; i < n; i++) {
-        g->l[i] = new list<int>;
-    }
+    // for(int i = 0; i < n; i++) {
+    //     g->l[i] = new list<int>;
+    // }
     g->numEdge = 0;
     return g;
 }
@@ -141,12 +141,12 @@ void BFS(G* g, int start) {
 }
 
 void setEdge(G* g, int i, int j, int wt) {
-    if(wt == 0) {
-        return;
-    }
-    if(g->l[i][j] == 0) {
+    //if(wt == 0) {
+    //    return;
+    //}
+    //if(g->l[i][j] == 0) {
         g->numEdge++;
-    }
+    //}
 
     g->l[i].push_back(j);
     //g->l[i][j] = wt;
@@ -154,19 +154,15 @@ void setEdge(G* g, int i, int j, int wt) {
 }
 
 void delEdge(G* g, int i, int j) {
-    if(g->matrix[i][j] != 0) {
+    //if(g->l[i][j] != 0) {
         g->numEdge--;
-    }
+    //}
 
-    g->matrix[i][j] = 0;
+    g->l[i].remove(j);
 }
 
 bool isEdge(G* g, int i, int j) {
     return true;
-}
-
-int weight(G* g, int i, int j) {
-    return g->matrix[i][j];
 }
 
 void setMark(G* g, int v, int val) {
