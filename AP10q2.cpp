@@ -148,8 +148,9 @@ void setEdge(G* g, int i, int j, int wt) {
         g->numEdge++;
     }
 
-    g->matrix[i][j] = wt;
-    g->matrix[j][i] = wt; // so pra nao-dirigido
+    g->l[i].push_back(j);
+    //g->l[i][j] = wt;
+    //g->l[j].push_back(i); // so pra nao-dirigido
 }
 
 void delEdge(G* g, int i, int j) {
