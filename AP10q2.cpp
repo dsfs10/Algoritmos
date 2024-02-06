@@ -1,6 +1,7 @@
 #include <iostream>
 #include <list>
 #include <queue>
+#include <stack>
 #define endl "\n"
 #define UNVISITED 0
 #define VISITED 1
@@ -28,7 +29,7 @@ void delEdge(G* g, int i, int j);
 bool isEdge(G* g, int i, int j);
 void setMark(G* g, int v, int val);
 int getMark(G* g, int v);
-void toposort(G* g, int v, Stack s); 
+void toposort(G* g, int v, stack<int> s); 
 
 
 int main(void) {
@@ -171,4 +172,16 @@ void setMark(G* g, int v, int val) {
 
 int getMark(G* g, int v) {
     return g->Mark[v];
+}
+
+void toposort(G* g, int v, stack<int> s) {
+    setMark(g, v, VISITED);
+    int w = first(g, v);
+    while(w < n(g)) {
+        if(getMark(g, w) == UNVISITED) {
+            toposort(g, w, s);
+        }
+        w = next(g, v, w);
+    }
+    s.push(v);
 }
