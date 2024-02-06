@@ -58,7 +58,10 @@ int main(void) {
         cin >> comando;
 
         if(comando == "add") {
-
+            int x, y;
+            cin >> x;
+            cin >> y;
+            setEdge(g, x, y, 1);
         }
         else if(comando == "BFS") {
             graphTraverse(g, "BFS");
@@ -74,6 +77,7 @@ int main(void) {
 
 G* create_graph(int n) {
     G* g = new G;
+    g->n = n;
     g->Mark = new int[n];
     g->matrix = new int*[n];
     for(int i = 0; i < n; i++) {
@@ -130,7 +134,7 @@ void graphTraverse(G* g, string traverse) {
 }
 
 void DFS(G* g, int v) {
-    //preVisit(g, v); do something before visiting the node
+    cout << v << " "; //preVisit(g, v); do something before visiting the node
     setMark(g, v, VISITED);
     int w = first(g, v);
     while(w < n(g)) {
@@ -148,7 +152,7 @@ void BFS(G* g, int start) {
     setMark(g, start, VISITED);
     while(length(Q) > 0) {
         int v = dequeue(Q);
-        //preVisit(g, v); do something before visiting the vertex
+        cout << v << " "; //preVisit(g, v); do something before visiting the vertex
         int w = first(g, v);
         while(w < n(g)) {
             if(getMark(g, w) == UNVISITED) {
@@ -181,11 +185,11 @@ void delEdge(G* g, int i, int j) {
 }
 
 bool isEdge(G* g, int i, int j) {
-
+    return true;
 }
 
 int weight(G* g, int i, int j) {
-
+    return g->matrix[i][j];
 }
 
 void setMark(G* g, int v, int val) {
@@ -197,7 +201,7 @@ int getMark(G* g, int v) {
 }
 
 Queue* create_queue() {
-    Queue* q = (Queue *) new int;
+    Queue* q = new Queue;
     q->front = q->rear = create_link(NULL); //header node
     q->size = 0;
     return q;
