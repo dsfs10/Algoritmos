@@ -1,4 +1,5 @@
 #include <iostream>
+#include <queue>
 #define endl "\n"
 #define UNVISITED 0
 #define VISITED 1
@@ -11,16 +12,6 @@ typedef struct g{
     int *Mark; // auxiliary marking array
 } G;
 
-typedef struct link {
-    int element; // E type, value stored in this link/node
-    struct link* next; // Reference to the next link/node
-} Link;
-
-typedef struct queue {
-    Link* front;
-    Link* rear;
-    int size; // queue size
-} Queue;
 
 G* create_graph(const int n);
 int n(G* g);
@@ -36,15 +27,7 @@ void delEdge(G* g, int i, int j);
 bool isEdge(G* g, int i, int j);
 int weight(G* g, int i, int j);
 void setMark(G* g, int v, int val);
-int getMark(G* g, int v);
-Queue* create_queue();
-void clear(Queue* q);
-void enqueue(Queue* q, int it);
-int dequeue(Queue* q);
-int frontValue(Queue* q);
-int length(Queue* q);
-Link* create_link(int it, Link* nextval);
-Link* create_link(Link* nextval); 
+int getMark(G* g, int v); 
 
 
 int main(void) {
@@ -147,17 +130,18 @@ void DFS(G* g, int v) {
 }
 
 void BFS(G* g, int start) {
-    Queue* Q = create_queue();
-    enqueue(Q, start);
+    queue<int> Q;
+    Q.push(start);
     setMark(g, start, VISITED);
-    while(length(Q) > 0) {
-        int v = dequeue(Q);
+    while(Q.size() > 0) {
+        int v = Q.front();
+        Q.pop();
         cout << v << " "; //preVisit(g, v); do something before visiting the vertex
         int w = first(g, v);
         while(w < n(g)) {
             if(getMark(g, w) == UNVISITED) {
                 setMark(g, w, VISITED);
-                enqueue(Q, w);
+                Q.push(w);
             }
             w = next(g, v, w);
         }
@@ -174,6 +158,7 @@ void setEdge(G* g, int i, int j, int wt) {
     }
 
     g->matrix[i][j] = wt;
+    g->matrix[j][i] = wt;
 }
 
 void delEdge(G* g, int i, int j) {
@@ -198,71 +183,4 @@ void setMark(G* g, int v, int val) {
 
 int getMark(G* g, int v) {
     return g->Mark[v];
-}
-
-Queue* create_queue() {
-    Queue* q = new Queue;
-    q->front = q->rear = create_link(NULL); //header node
-    q->size = 0;
-    return q;
-}
-
-void clear(Queue* q) {
-       Link *temp = q->front;
-       Link *next = temp->next;
-
-       while(temp->next != NULL) {
-        next = temp->next;
-        delete temp;
-        temp = next;
-       }
-       delete temp;
-       delete q;
-}
-
-void enqueue(Queue* q, int it) {
-    q->rear->next = create_link(it, NULL);
-    q->rear = q->rear->next;
-    if(q->size == 0) {
-        q->front = q->rear;
-    }
-    q->size++;
-}
-
-int dequeue(Queue* q) {
-    if(q->size == 0) {
-        return -1; // Error
-    }
-    int it = q->front->next->element;
-    q->front->next = q->front->next->next;
-
-    if(q->front->next == NULL) {
-        q->rear = q->front;
-    }
-    q->size--;
-
-    return it;
-}
-
-int frontValue(Queue* q) {
-    cout << q->front->element << endl;
-    return q->front->element;
-}
-
-int length(Queue* q) {
-    cout << q->size << endl;
-    return q->size;
-}
-
-Link* create_link(int it, Link* nextval) {
-    Link* n = (Link *) new int;
-    n->element = it;
-    n->next = nextval;
-    return n;
-}
-
-Link* create_link(Link* nextval) {
-    Link* n = (Link *) new int;
-    n->next = nextval;
-    return n;
 }
