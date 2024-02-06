@@ -48,9 +48,11 @@ int main(void) {
         }
         else if(comando == "BFS") {
             graphTraverse(g, "BFS");
+            cout << endl;
         }
         else if(comando == "DFS") {
             graphTraverse(g, "DFS");
+            cout << endl;
         }
     }
 
