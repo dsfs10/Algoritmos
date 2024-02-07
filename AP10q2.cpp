@@ -70,20 +70,19 @@ int e(G* g) {
     return g->numEdge;
 }
 
-int first(G* g, int v) {
-    for(int i = 0; i <= (n(g)-1); i++) {
-        if(g->l[v][i] != 0) {
-            return i;
-        }
+int first(G* g, int v) { 
+    if(g->l[v].empty()) {
+        return -1;
     }
 
-    return n(g);
+    return g->l[v].front();
+    //return n(g);
 }
 
 int next(G* g, int v, int w) {
     for(int i = w + 1; i <= (n(g)-1); i++) {
-        if(g->l[v][i] != 0) {
-            return i;
+        if(!(g->l[i].empty())) {
+            return g->l[i].front();
         }
     }
 
