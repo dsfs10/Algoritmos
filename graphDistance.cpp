@@ -1,5 +1,6 @@
 #include <iostream>
 #include <queue>
+#include <stack>
 #define endl "\n"
 #define UNVISITED 0
 #define VISITED 1
@@ -22,13 +23,13 @@ int next(G* g, int v, int w);
 void graphTraverse(G* g, string traverse);
 void DFS(G* g, int v);
 void BFS(G* g, int start);
-//void toposort(G* g, int v, Stack s);
 void setEdge(G* g, int i, int j, int wt);
 void delEdge(G* g, int i, int j);
 bool isEdge(G* g, int i, int j);
 int weight(G* g, int i, int j);
 void setMark(G* g, int v, int val);
 int getMark(G* g, int v);
+void toposort(G* g, int v, stack<int> &s);
 int distance(G* g, int v); 
 
 
@@ -58,6 +59,10 @@ int main(void) {
         }
     }
 
+    for(int i = 0; i < n; i++) {
+        cout << g->distance[i] << " ";
+    }
+
     return 0;
 }
 
@@ -70,6 +75,7 @@ G* create_graph(int n) {
     g->matrix = new int*[n];
     for(int i = 0; i < n; i++) {
         g->matrix[i] = new int;
+        g->distance[i] = -1;
     }
     g->numEdge = 0;
     return g;
@@ -107,15 +113,18 @@ void graphTraverse(G* g, string traverse) {
     for(int v = 0; v <= (n(g)-1); v++) {
         setMark(g, v, UNVISITED);
     }
-    // int c;
-    // cin >> c;
-    for(int v = 0; v <= (n(g)-1); v++) {
+    int c;
+    cin >> c;
+    for(int v = c; v <= (n(g)-1); v++) {
         if(getMark(g, v) == UNVISITED) {
             if(traverse == "BFS") {
                 BFS(g, v);
             }
             else if(traverse == "DFS") {
                 DFS(g, v);
+            }
+            else if(traverse == "toposort") {
+                //toposort(g, v, s);
             }
         }
     }
@@ -137,6 +146,7 @@ void DFS(G* g, int v) {
 void BFS(G* g, int start) {
     queue<int> Q;
     Q.push(start);
+    g->distance[start] = 0;
     setMark(g, start, VISITED);
     while(Q.size() > 0) {
         int v = Q.front();
@@ -147,8 +157,8 @@ void BFS(G* g, int start) {
             if(getMark(g, w) == UNVISITED) {
                 setMark(g, w, VISITED);
                 Q.push(w);
+                g->distance[w] = g->distance[v] + 1;
             }
-            g->distance[w] = g->distance[v] + 1;
             w = next(g, v, w);
         }
         //posVisit(g, v); do something after visiting the vertex
@@ -189,6 +199,18 @@ void setMark(G* g, int v, int val) {
 
 int getMark(G* g, int v) {
     return g->Mark[v];
+}
+
+void toposort(G* g, int v, stack<int> &s) {
+    setMark(g, v, VISITED);
+    int w = first(g, v);
+    while(w < n(g)) {
+        if(getMark(g, w) == UNVISITED) {
+            toposort(g, w, s);
+        }
+        w = next(g, v, w);
+    }
+    s.push(v);
 }
 
 int distance(G* g, int v) {
