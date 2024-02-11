@@ -22,14 +22,13 @@ int next(G* g, int v, int w);
 void graphTraverse(G* g, string traverse);
 void DFS(G* g, int v);
 void BFS(G* g, int start);
-//void toposort(G* g, int v, Stack s);
 void setEdge(G* g, int i, int j, int wt);
 void delEdge(G* g, int i, int j);
 bool isEdge(G* g, int i, int j);
 int weight(G* g, int i, int j);
 void setMark(G* g, int v, int val);
 int getMark(G* g, int v); 
-void toposort(G* g, int v, stack<int> s);
+void toposort(G* g, int v, stack<int> &s);
 
 
 int main(void) {
@@ -68,7 +67,10 @@ G* create_graph(int n) {
     g->Mark = new int[n];
     g->matrix = new int*[n];
     for(int i = 0; i < n; i++) {
-        g->matrix[i] = new int;
+        g->matrix[i] = new int[n];
+        for(int j = 0; j < n; j++) {
+            g->matrix[i][j] = 0;
+        }
     }
     g->numEdge = 0;
     return g;
@@ -116,12 +118,15 @@ void graphTraverse(G* g, string traverse) {
             else if(traverse == "DFS") {
                 DFS(g, v);
             }
+            else if(traverse == "toposort") {
+                //toposort(g, v, s);
+            }
         }
     }
 }
 
 void DFS(G* g, int v) {
-    cout << v << " "; //preVisit(g, v); do something before visiting the node
+    cout << v << " "; //preVisit(g, v); do something before visiting the vertex
     setMark(g, v, VISITED);
     int w = first(g, v);
     while(w < n(g)) {
@@ -189,7 +194,7 @@ int getMark(G* g, int v) {
     return g->Mark[v];
 }
 
-void toposort(G* g, int v, stack<int> s) {
+void toposort(G* g, int v, stack<int> &s) {
     setMark(g, v, VISITED);
     int w = first(g, v);
     while(w < n(g)) {
