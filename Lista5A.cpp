@@ -11,6 +11,7 @@ typedef struct g{
     int numEdge; // number of edges
     int n; // number of vertices
     int *Mark; // auxiliary marking array
+    int *distance;
 } G;
 
 
@@ -19,21 +20,21 @@ int n(G* g);
 int e(G* g);
 int first(G* g, int v);
 int next(G* g, int v, int w);
-void graphTraverse(G* g);
+void graphTraverse(G* g, string traverse, stack<int> &s);
 void DFS(G* g, int v);
 void BFS(G* g, int start);
-//void toposort(G* g, int v, Stack s);
 void setEdge(G* g, int i, int j, int wt);
 void delEdge(G* g, int i, int j);
 bool isEdge(G* g, int i, int j);
-int weight(G* g, int i, int j);
 void setMark(G* g, int v, int val);
-int getMark(G* g, int v); 
-void toposort(G* g, int v, stack<int> s);
+int getMark(G* g, int v);
+void toposort(G* g, int v, stack<int> &s);
+void printStack(stack<int> s, G* g); 
 
 
 int main(void) {
     int n, m;
+    stack<int> s;
     cin >> n;
     cin >> m;
     G* g = create_graph(n);
@@ -45,7 +46,9 @@ int main(void) {
         setEdge(g, x, y, 1);
     }
 
-    graphTraverse(g);
+    graphTraverse(g, "toposort", s);
+    printStack(s, g);
+
 
     return 0;
 }
@@ -53,11 +56,16 @@ int main(void) {
 
 G* create_graph(int n) {
     G* g = new G;
-    g->n = n;
-    g->Mark = new int[n];
-    g->matrix = new int*[n];
-    for(int i = 0; i < n; i++) {
-        g->matrix[i] = new int;
+    g->n = n+1;
+    g->Mark = new int[n+1];
+    g->distance = new int[n+1];
+    g->matrix = new int*[n+1];
+    for(int i = 0; i <= n; i++) {
+        g->matrix[i] = new int[n+1];
+        for(int j = 0; j <= n; j++) {
+            g->matrix[i][j] = 0;
+        }
+        g->distance[i] = -1;
     }
     g->numEdge = 0;
     return g;
@@ -72,7 +80,7 @@ int e(G* g) {
 }
 
 int first(G* g, int v) {
-    for(int i = 0; i <= (n(g)-1); i++) {
+    for(int i = 1; i <= (n(g)-1); i++) {
         if(g->matrix[v][i] != 0) {
             return i;
         }
@@ -91,21 +99,29 @@ int next(G* g, int v, int w) {
     return n(g);
 }
 
-void graphTraverse(G* g) {
+void graphTraverse(G* g, string traverse, stack<int> &s) {
     for(int v = 0; v <= (n(g)-1); v++) {
         setMark(g, v, UNVISITED);
     }
-    
-    for(int v = 0; v <= (n(g)-1); v++) {
+    //int c;
+    //cin >> c;
+    for(int v = 1; v <= (n(g)-1); v++) {
         if(getMark(g, v) == UNVISITED) {
-            stack<int> s;
-            toposort(g, v, s);     
+            if(traverse == "BFS") {
+                BFS(g, v);
+            }
+            else if(traverse == "DFS") {
+                DFS(g, v);
+            }
+            else if(traverse == "toposort") {
+                toposort(g, v, s);
+            }
         }
     }
 }
 
 void DFS(G* g, int v) {
-    cout << v << " "; //preVisit(g, v); do something before visiting the node
+    //cout << v << " "; //preVisit(g, v); do something before visiting the node
     setMark(g, v, VISITED);
     int w = first(g, v);
     while(w < n(g)) {
@@ -120,16 +136,18 @@ void DFS(G* g, int v) {
 void BFS(G* g, int start) {
     queue<int> Q;
     Q.push(start);
+    g->distance[start] = 0;
     setMark(g, start, VISITED);
     while(Q.size() > 0) {
         int v = Q.front();
         Q.pop();
-        cout << v << " "; //preVisit(g, v); do something before visiting the vertex
+        //cout << v << " "; //preVisit(g, v); do something before visiting the vertex
         int w = first(g, v);
         while(w < n(g)) {
             if(getMark(g, w) == UNVISITED) {
                 setMark(g, w, VISITED);
                 Q.push(w);
+                g->distance[w] = g->distance[v] + 1;
             }
             w = next(g, v, w);
         }
@@ -161,10 +179,6 @@ bool isEdge(G* g, int i, int j) {
     return true;
 }
 
-int weight(G* g, int i, int j) {
-    return g->matrix[i][j];
-}
-
 void setMark(G* g, int v, int val) {
     g->Mark[v] = val;
 }
@@ -173,7 +187,7 @@ int getMark(G* g, int v) {
     return g->Mark[v];
 }
 
-void toposort(G* g, int v, stack<int> s) {
+void toposort(G* g, int v, stack<int> &s) {
     setMark(g, v, VISITED);
     int w = first(g, v);
     while(w < n(g)) {
@@ -183,5 +197,11 @@ void toposort(G* g, int v, stack<int> s) {
         w = next(g, v, w);
     }
     s.push(v);
-    cout << s.top() << " ";
+}
+
+void printStack(stack<int> s, G* g) {
+    while(!(s.empty())) {
+        cout << s.top() << " ";
+        s.pop();
+    }
 }
