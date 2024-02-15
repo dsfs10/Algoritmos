@@ -11,7 +11,8 @@ typedef struct g{
     int numEdge; // number of edges
     int n; // number of vertices
     int *Mark; // auxiliary marking array
-    int *distance;
+    int *path;
+    bool cyclic; // it is true if there is a cycle
 } G;
 
 
@@ -20,16 +21,13 @@ int n(G* g);
 int e(G* g);
 int first(G* g, int v);
 int next(G* g, int v, int w);
-void graphTraverse(G* g, string traverse, stack<int> &s);
-void DFS(G* g, int v);
-void BFS(G* g, int start);
+void graphTraverse(G* g, stack<int> &s);
 void setEdge(G* g, int i, int j, int wt);
 void delEdge(G* g, int i, int j);
-bool isEdge(G* g, int i, int j);
 void setMark(G* g, int v, int val);
 int getMark(G* g, int v);
 void toposort(G* g, int v, stack<int> &s);
-void printStack(stack<int> s, G* g); 
+void printStack(stack<int> s); 
 
 
 int main(void) {
@@ -45,10 +43,15 @@ int main(void) {
         cin >> y;
         setEdge(g, x, y, 1);
     }
+   
+    graphTraverse(g, s);
 
-    graphTraverse(g, "toposort", s);
-    printStack(s, g);
-
+    if(g->cyclic == false) {
+        printStack(s);
+    }
+    else {
+        cout << "Sandro fails." << endl;
+    }   
 
     return 0;
 }
@@ -58,16 +61,17 @@ G* create_graph(int n) {
     G* g = new G;
     g->n = n+1;
     g->Mark = new int[n+1];
-    g->distance = new int[n+1];
+    g->path = new int[n+1];
     g->matrix = new int*[n+1];
     for(int i = 0; i <= n; i++) {
         g->matrix[i] = new int[n+1];
         for(int j = 0; j <= n; j++) {
             g->matrix[i][j] = 0;
         }
-        g->distance[i] = -1;
+        g->path[i] = 0;
     }
     g->numEdge = 0;
+    g->cyclic = false;
     return g;
 }
 
@@ -80,8 +84,8 @@ int e(G* g) {
 }
 
 int first(G* g, int v) {
-    for(int i = 1; i <= (n(g)-1); i++) {
-        if(g->matrix[v][i] != 0) {
+    for(int i = (n(g)-1); i >= 1; i--) {
+        if(g->matrix[v][i] == 1) {
             return i;
         }
     }
@@ -90,8 +94,8 @@ int first(G* g, int v) {
 }
 
 int next(G* g, int v, int w) {
-    for(int i = w + 1; i <= (n(g)-1); i++) {
-        if(g->matrix[v][i] != 0) {
+    for(int i = w - 1; i >= 1; i--) {
+        if(g->matrix[v][i] == 1) {
             return i;
         }
     }
@@ -99,70 +103,23 @@ int next(G* g, int v, int w) {
     return n(g);
 }
 
-void graphTraverse(G* g, string traverse, stack<int> &s) {
+void graphTraverse(G* g, stack<int> &s) {
     for(int v = 0; v <= (n(g)-1); v++) {
         setMark(g, v, UNVISITED);
     }
-    //int c;
-    //cin >> c;
-    for(int v = 1; v <= (n(g)-1); v++) {
+    
+    for(int v = (n(g)-1); v >= 1; v--) {
         if(getMark(g, v) == UNVISITED) {
-            if(traverse == "BFS") {
-                BFS(g, v);
-            }
-            else if(traverse == "DFS") {
-                DFS(g, v);
-            }
-            else if(traverse == "toposort") {
-                toposort(g, v, s);
-            }
+            toposort(g, v, s);
         }
-    }
-}
-
-void DFS(G* g, int v) {
-    //cout << v << " "; //preVisit(g, v); do something before visiting the node
-    setMark(g, v, VISITED);
-    int w = first(g, v);
-    while(w < n(g)) {
-        if(getMark(g, w) == UNVISITED) {
-            DFS(g, w);
-        }
-        w = next(g, v, w);
-    }
-    //posVisit(g, v); do something after visiting the vertex
-}
-
-void BFS(G* g, int start) {
-    queue<int> Q;
-    Q.push(start);
-    g->distance[start] = 0;
-    setMark(g, start, VISITED);
-    while(Q.size() > 0) {
-        int v = Q.front();
-        Q.pop();
-        //cout << v << " "; //preVisit(g, v); do something before visiting the vertex
-        int w = first(g, v);
-        while(w < n(g)) {
-            if(getMark(g, w) == UNVISITED) {
-                setMark(g, w, VISITED);
-                Q.push(w);
-                g->distance[w] = g->distance[v] + 1;
-            }
-            w = next(g, v, w);
-        }
-        //posVisit(g, v); do something after visiting the vertex
     }
 }
 
 void setEdge(G* g, int i, int j, int wt) {
-    if(wt == 0) {
-        return;
-    }
     if(g->matrix[i][j] == 0) {
         g->numEdge++;
     }
-
+    
     g->matrix[i][j] = wt;
     //g->matrix[j][i] = wt;
 }
@@ -175,10 +132,6 @@ void delEdge(G* g, int i, int j) {
     g->matrix[i][j] = 0;
 }
 
-bool isEdge(G* g, int i, int j) {
-    return true;
-}
-
 void setMark(G* g, int v, int val) {
     g->Mark[v] = val;
 }
@@ -189,17 +142,26 @@ int getMark(G* g, int v) {
 
 void toposort(G* g, int v, stack<int> &s) {
     setMark(g, v, VISITED);
+    g->path[v] = VISITED;
     int w = first(g, v);
-    while(w < n(g)) {
+    while(w < n(g) && g->cyclic == false) {
         if(getMark(g, w) == UNVISITED) {
             toposort(g, w, s);
         }
+        if(g->cyclic == true) {
+            return;
+        }
+        if(g->path[w] == VISITED) {
+            g->cyclic = true;
+            return;
+        }
         w = next(g, v, w);
     }
+    g->path[v] = UNVISITED;
     s.push(v);
 }
 
-void printStack(stack<int> s, G* g) {
+void printStack(stack<int> s) {
     while(!(s.empty())) {
         cout << s.top() << " ";
         s.pop();
