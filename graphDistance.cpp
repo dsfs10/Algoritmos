@@ -29,8 +29,7 @@ bool isEdge(G* g, int i, int j);
 int weight(G* g, int i, int j);
 void setMark(G* g, int v, int val);
 int getMark(G* g, int v);
-void toposort(G* g, int v, stack<int> &s);
-int distance(G* g, int v); 
+void toposort(G* g, int v, stack<int> &s); 
 
 
 int main(void) {
@@ -131,7 +130,7 @@ void graphTraverse(G* g, string traverse) {
 }
 
 void DFS(G* g, int v) {
-    cout << v << " "; //preVisit(g, v); do something before visiting the node
+    cout << v << " "; //preVisit(g, v); do something before visiting the vertex
     setMark(g, v, VISITED);
     int w = first(g, v);
     while(w < n(g)) {
@@ -151,7 +150,7 @@ void BFS(G* g, int start) {
     while(Q.size() > 0) {
         int v = Q.front();
         Q.pop();
-        cout << v << " "; //preVisit(g, v); do something before visiting the vertex
+        //cout << v << " "; //preVisit(g, v); do something before visiting the vertex
         int w = first(g, v);
         while(w < n(g)) {
             if(getMark(g, w) == UNVISITED) {
@@ -174,7 +173,7 @@ void setEdge(G* g, int i, int j, int wt) {
     }
 
     g->matrix[i][j] = wt;
-    g->matrix[j][i] = wt;
+    //g->matrix[j][i] = wt; only for undirected graphs
 }
 
 void delEdge(G* g, int i, int j) {
@@ -211,8 +210,4 @@ void toposort(G* g, int v, stack<int> &s) {
         w = next(g, v, w);
     }
     s.push(v);
-}
-
-int distance(G* g, int v) {
-    return g->distance[v];
 }
