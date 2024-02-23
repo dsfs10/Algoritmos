@@ -3,10 +3,10 @@
 #include <iterator>
 #include <queue>
 #include <stack>
+#include <limits>
 #define endl "\n"
 #define UNVISITED 0
 #define VISITED 1
-#define INFINITE 10000
 using namespace std;
 
 typedef struct g{
@@ -51,7 +51,7 @@ int main(void) {
             setEdge(g, x, y, w);
         }
         graphTraverse(g, s);
-        if(g->D[t] < 10000) {    
+        if(g->D[t] < numeric_limits<int>::max()) {    
             cout << "Case #" << i+1 << ": " << g->D[t] << endl;
         }
         else {
@@ -164,7 +164,7 @@ void Dijkstra(G* g, int s) {
     int p, v;
     priority_queue<pair<int, pair<int,int>>, vector<pair<int, pair<int,int>>>, greater<pair<int, pair<int,int>>>> H;
     for(int i = 0; i <= (n(g)-1); i++) {
-        g->D[i] = INFINITE;
+        g->D[i] = numeric_limits<int>::max();
         P[i] = -1;
     }
     H.push(make_pair(0, make_pair(s, s)));
