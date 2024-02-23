@@ -2,7 +2,6 @@
 #include <list>
 #include <iterator>
 #include <queue>
-#include <stack>
 #include <limits>
 #define endl "\n"
 #define UNVISITED 0
@@ -14,7 +13,7 @@ typedef struct g{
     int numEdge; // number of edges
     int n; // number of vertices
     int *Mark; // auxiliary marking array
-    int *D;
+    int *D; // distance from a vertex to all the others
 } G;
 
 
@@ -25,16 +24,12 @@ int first(G* g, int v);
 int next(G* g, int v, int w);
 int weight(G* g, int i, int j);
 void graphTraverse(G* g, int v);
-void DFS(G* g, int v);
-void BFS(G* g, int start);
 void Dijkstra(G* g, int s);
 void setEdge(G* g, int i, int j, int w);
 void delEdge(G* g, int i, int j);
 bool isEdge(G* g, int i, int j);
 void setMark(G* g, int v, int val);
 int getMark(G* g, int v);
-void toposort(G* g, int v, stack<int> &s);
-void printStack(stack<int> s); 
 
 
 int main(void) {
@@ -126,39 +121,6 @@ void graphTraverse(G* g, int v) {
     }
 }
 
-void DFS(G* g, int v) {
-    //preVisit(g, v); do something before visiting the node
-    setMark(g, v, VISITED);
-    int w = first(g, v);
-    while(w < n(g)) {
-        if(getMark(g, w) == UNVISITED) {
-            DFS(g, w);
-        }
-        w = next(g, v, w);
-    }
-    //posVisit(g, v); do something after visiting the vertex
-}
-
-void BFS(G* g, int start) {
-    queue<int> Q;
-    Q.push(start);
-    setMark(g, start, VISITED);
-    while(Q.size() > 0) {
-        int v = Q.front();
-        Q.pop();
-        //preVisit(g, v); do something before visiting the vertex
-        int w = first(g, v);
-        while(w < n(g)) {
-            if(getMark(g, w) == UNVISITED) {
-                setMark(g, w, VISITED);
-                Q.push(w);
-            }
-            w = next(g, v, w);
-        }
-        //posVisit(g, v); do something after visiting the vertex
-    }
-}
-
 void Dijkstra(G* g, int s) {
     int *P = new int[g->n];
     int p, v;
@@ -216,23 +178,4 @@ void setMark(G* g, int v, int val) {
 
 int getMark(G* g, int v) {
     return g->Mark[v];
-}
-
-void toposort(G* g, int v, stack<int> &s) {
-    setMark(g, v, VISITED);
-    int w = first(g, v);
-    while(w < n(g)) {
-        if(getMark(g, w) == UNVISITED) {
-            toposort(g, w, s);
-        }
-        w = next(g, v, w);
-    }
-    s.push(v);
-}
-
-void printStack(stack<int> s) {
-    while(!(s.empty())) {
-        cout << s.top() << " ";
-        s.pop();
-    }
 }
