@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <limits>
 #include <iterator>
 #include <queue>
 #include <stack>
@@ -22,7 +23,7 @@ G* create_graph(const int n);
 int n(G* g);
 int e(G* g);
 int first(G* g, int v);
-int next(G* g, int v, int w, int count);
+int next(G* g, int v, int w);
 int weight(G* g, int i, int j);
 void graphTraverse(G* g, int v);
 void DFS(G* g, int v);
@@ -86,15 +87,31 @@ int first(G* g, int v) {
     return g->l[v].front().first;
 }
 
-int next(G* g, int v, int w, int count) {
+int next(G* g, int v, int w) {
     vector<pair<int, int>>::iterator it;
-    
+    if(!(g->l[v].empty())) {
+        for(it = g->l[v].begin(); it != g->l[v].end(); it++) {  
+            if((*it).first == w && (*it).first != g->l[v].back().first) {
+                it++;
+                return (*it).first;
+            }
+        }
+    }
 
     return n(g);
 }
 
 int weight(G* g, int i, int j) {
-    return g->l[i][j].second;
+    vector<pair<int, int>>::iterator it;
+    if(!(g->l[i].empty())) {
+        for(it = g->l[i].begin(); it != g->l[i].end(); it++) {  
+            if((*it).first == j) {
+                return (*it).second;
+            }
+        }
+    }
+
+    return 0;
 }
 
 void graphTraverse(G* g, int v) {
@@ -116,7 +133,7 @@ void DFS(G* g, int v) {
         if(getMark(g, w) == UNVISITED) {
             DFS(g, w);
         }
-        w = next(g, v, w, count);
+        w = next(g, v, w);
     }
     //posVisit(g, v); do something after visiting the vertex
 }
@@ -136,7 +153,7 @@ void BFS(G* g, int start) {
                 setMark(g, w, VISITED);
                 Q.push(w);
             }
-            w = next(g, v, w, count);
+            w = next(g, v, w);
         }
         //posVisit(g, v); do something after visiting the vertex
     }
@@ -147,7 +164,7 @@ void Dijkstra(G* g, int s) {
     int p, v;
     priority_queue<pair<int, pair<int,int>>, vector<pair<int, pair<int,int>>>, greater<pair<int, pair<int,int>>>> H;
     for(int i = 0; i <= (n(g)-1); i++) {
-        g->D[i] = INFINITE;
+        g->D[i] = numeric_limits<int>::max();
         P[i] = -1;
     }
     H.push(make_pair(0, make_pair(s, s)));
@@ -172,7 +189,7 @@ void Dijkstra(G* g, int s) {
                 g->D[w] = g->D[v] + weight(g, v, w);
                 H.push(make_pair(g->D[w], make_pair(v, w)));    
             }
-            w = next(g, v, w, count);
+            w = next(g, v, w);
         }
     }
 }
@@ -210,7 +227,7 @@ void toposort(G* g, int v, stack<int> &s) {
         if(getMark(g, w) == UNVISITED) {
             toposort(g, w, s);
         }
-        w = next(g, v, w, count);
+        w = next(g, v, w);
     }
     s.push(v);
 }
