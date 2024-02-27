@@ -1,13 +1,12 @@
 #include <iostream>
 #include <vector>
-#include <limits>
 #include <iterator>
 #include <queue>
 #include <stack>
+#include <limits>
 #define endl "\n"
 #define UNVISITED 0
 #define VISITED 1
-#define INFINITE 10000
 using namespace std;
 
 typedef struct g{
@@ -23,8 +22,8 @@ G* create_graph(const int n);
 int n(G* g);
 int e(G* g);
 int first(G* g, int v);
-int next(G* g, int v, int w);
-int weight(G* g, int i, int j);
+int next(G* g, int v, vector<pair<int, int>>::iterator &it);
+int weight(G* g, vector<pair<int, int>>::iterator it);
 void graphTraverse(G* g, int v);
 void DFS(G* g, int v);
 void BFS(G* g, int start);
@@ -51,7 +50,7 @@ int main(void) {
     }
 
     graphTraverse(g, v);
-    
+
     for(int i = 0; i < n; i++) {
         cout << g->D[i] << " ";
     }
@@ -87,31 +86,18 @@ int first(G* g, int v) {
     return g->l[v].front().first;
 }
 
-int next(G* g, int v, int w) {
-    vector<pair<int, int>>::iterator it;
-    if(!(g->l[v].empty())) {
-        for(it = g->l[v].begin(); it != g->l[v].end(); it++) {  
-            if((*it).first == w && (*it).first != g->l[v].back().first) {
-                it++;
-                return (*it).first;
-            }
-        }
+int next(G* g, int v, vector<pair<int, int>>::iterator &it) {
+    it++;
+    if(it == g->l[v].end()) {
+        return n(g);
     }
-
-    return n(g);
+    else {
+        return (*it).first;
+    }
 }
 
-int weight(G* g, int i, int j) {
-    vector<pair<int, int>>::iterator it;
-    if(!(g->l[i].empty())) {
-        for(it = g->l[i].begin(); it != g->l[i].end(); it++) {  
-            if((*it).first == j) {
-                return (*it).second;
-            }
-        }
-    }
-
-    return 0;
+int weight(G* g, vector<pair<int, int>>::iterator it) {
+    return (*it).second;
 }
 
 void graphTraverse(G* g, int v) {
@@ -128,12 +114,11 @@ void DFS(G* g, int v) {
     //preVisit(g, v); do something before visiting the node
     setMark(g, v, VISITED);
     int w = first(g, v);
-    int count = 0;
     while(w < n(g)) {
         if(getMark(g, w) == UNVISITED) {
             DFS(g, w);
         }
-        w = next(g, v, w);
+        //w = next(g, v, w);
     }
     //posVisit(g, v); do something after visiting the vertex
 }
@@ -147,13 +132,12 @@ void BFS(G* g, int start) {
         Q.pop();
         //preVisit(g, v); do something before visiting the vertex
         int w = first(g, v);
-        int count = 0;
         while(w < n(g)) {
             if(getMark(g, w) == UNVISITED) {
                 setMark(g, w, VISITED);
                 Q.push(w);
             }
-            w = next(g, v, w);
+            //w = next(g, v, w);
         }
         //posVisit(g, v); do something after visiting the vertex
     }
@@ -162,6 +146,7 @@ void BFS(G* g, int start) {
 void Dijkstra(G* g, int s) {
     int *P = new int[g->n];
     int p, v;
+    vector<pair<int, int>>::iterator it;
     priority_queue<pair<int, pair<int,int>>, vector<pair<int, pair<int,int>>>, greater<pair<int, pair<int,int>>>> H;
     for(int i = 0; i <= (n(g)-1); i++) {
         g->D[i] = numeric_limits<int>::max();
@@ -183,13 +168,13 @@ void Dijkstra(G* g, int s) {
         setMark(g, v, VISITED);
         P[v] = p;
         int w = first(g, v);
-        int count = 0;
+        it = g->l[v].begin();
         while(w < n(g)) {
-            if(getMark(g, w) != VISITED && g->D[w] > g->D[v] + weight(g, v, w)) {
-                g->D[w] = g->D[v] + weight(g, v, w);
+            if(getMark(g, w) != VISITED && g->D[w] > g->D[v] + weight(g, it)) {
+                g->D[w] = g->D[v] + weight(g, it);
                 H.push(make_pair(g->D[w], make_pair(v, w)));    
             }
-            w = next(g, v, w);
+            w = next(g, v, it);
         }
     }
 }
@@ -203,7 +188,7 @@ void setEdge(G* g, int i, int j, int w) {
 
 void delEdge(G* g, int i, int j) {
     g->numEdge--;
-    int w = weight(g, i, j);
+    //int w = weight(g, i, j);
     //g->l[i].remove(make_pair(j, w));
 }
 
@@ -222,12 +207,11 @@ int getMark(G* g, int v) {
 void toposort(G* g, int v, stack<int> &s) {
     setMark(g, v, VISITED);
     int w = first(g, v);
-    int count = 0;
     while(w < n(g)) {
         if(getMark(g, w) == UNVISITED) {
             toposort(g, w, s);
         }
-        w = next(g, v, w);
+        //w = next(g, v, w);
     }
     s.push(v);
 }
