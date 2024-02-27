@@ -202,6 +202,7 @@ void Prim(G* g) {
         setMark(g, i, UNVISITED);
     }
     H.push(make_pair(0, make_pair(0, 0)));
+    g->D[0] = 0;
 
     for(int i = 0; i <= (n(g)-1); i++) {
         do {
