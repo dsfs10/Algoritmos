@@ -35,7 +35,6 @@ int getMark(G* g, int v);
 
 int main(void) {
     int n = -1, m = -1;
-    long long int sum = 0;
     
     do {
         cin >> n >> m;
