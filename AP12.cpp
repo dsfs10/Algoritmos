@@ -31,8 +31,6 @@ void BFS(G* g, int start);
 void Dijkstra(G* g, int s);
 void Prim(G* g);
 void setEdge(G* g, int i, int j, int w);
-void delEdge(G* g, int i, int j);
-bool isEdge(G* g, int i, int j);
 void setMark(G* g, int v, int val);
 int getMark(G* g, int v);
 void toposort(G* g, int v, stack<int> &s);
@@ -52,7 +50,7 @@ int main(void) {
     }
     graphTraverse(g, 0);
 
-    for(int i = 1; i < n; i++) {
+    for(int i = 0; i < n; i++) {
         sum = sum + g->D[i];
     }
     cout << sum << endl;
@@ -197,6 +195,7 @@ void Prim(G* g) {
         setMark(g, i, UNVISITED);
     }
     H.push(make_pair(0, make_pair(0, 0)));
+    g->D[0] = 0;
 
     for(int i = 0; i <= (n(g)-1); i++) {
         do {
@@ -227,16 +226,6 @@ void setEdge(G* g, int i, int j, int w) {
 
     g->l[i].push_back(make_pair(j, w));
     g->l[j].push_back(make_pair(i, w)); // only for undirected graphs
-}
-
-void delEdge(G* g, int i, int j) {
-    g->numEdge--;
-    //int w = weight(g, i, j);
-    //g->l[i].remove(make_pair(j, w));
-}
-
-bool isEdge(G* g, int i, int j) {
-    return true;
 }
 
 void setMark(G* g, int v, int val) {
