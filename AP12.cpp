@@ -23,14 +23,12 @@ G* create_graph(const int n);
 int n(G* g);
 int e(G* g);
 int first(G* g, int v);
-int next(G* g, int v, int w);
-int weight(G* g, int i, int j);
+int next(G* g, int v, vector<pair<int, int>>::iterator &it);
+int weight(G* g, vector<pair<int, int>>::iterator it);
 void graphTraverse(G* g, int v);
 void DFS(G* g, int v);
 void BFS(G* g, int start);
 void Dijkstra(G* g, int s);
-void Floyd(G* g);
-void BellmanFord(G* g, int s);
 void Prim(G* g);
 void setEdge(G* g, int i, int j, int w);
 void delEdge(G* g, int i, int j);
@@ -90,31 +88,18 @@ int first(G* g, int v) {
     return g->l[v].front().first;
 }
 
-int next(G* g, int v, int w) {
-    vector<pair<int, int>>::iterator it;
-    if(!(g->l[v].empty())) {
-        for(it = g->l[v].begin(); it != g->l[v].end(); it++) {  
-            if((*it).first == w && (*it).first != g->l[v].back().first) {
-                it++;
-                return (*it).first;
-            }
-        }
+int next(G* g, int v, vector<pair<int, int>>::iterator &it) {
+    it++;
+    if(it == g->l[v].end()) {
+        return n(g);
     }
-
-    return n(g);
+    else {
+        return (*it).first;
+    }
 }
 
-int weight(G* g, int i, int j) {
-    vector<pair<int, int>>::iterator it;
-    if(!(g->l[i].empty())) {
-        for(it = g->l[i].begin(); it != g->l[i].end(); it++) {  
-            if((*it).first == j) {
-                return (*it).second;
-            }
-        }
-    }
-
-    return 0;
+int weight(G* g, vector<pair<int, int>>::iterator it) {
+    return (*it).second;
 }
 
 void graphTraverse(G* g, int v) {
@@ -124,25 +109,27 @@ void graphTraverse(G* g, int v) {
     
     if(getMark(g, v) == UNVISITED) {
         Prim(g);
-        //Dijkstra(g, v);
     }
 }
 
 void DFS(G* g, int v) {
     //preVisit(g, v); do something before visiting the node
+    vector<pair<int, int>>::iterator it;
     setMark(g, v, VISITED);
     int w = first(g, v);
+    it = g->l[v].begin();
     while(w < n(g)) {
         if(getMark(g, w) == UNVISITED) {
             DFS(g, w);
         }
-        w = next(g, v, w);
+        w = next(g, v, it);
     }
     //posVisit(g, v); do something after visiting the vertex
 }
 
 void BFS(G* g, int start) {
     queue<int> Q;
+    vector<pair<int, int>>::iterator it;
     Q.push(start);
     setMark(g, start, VISITED);
     while(Q.size() > 0) {
@@ -150,12 +137,13 @@ void BFS(G* g, int start) {
         Q.pop();
         //preVisit(g, v); do something before visiting the vertex
         int w = first(g, v);
+        it = g->l[v].begin();
         while(w < n(g)) {
             if(getMark(g, w) == UNVISITED) {
                 setMark(g, w, VISITED);
                 Q.push(w);
             }
-            w = next(g, v, w);
+            w = next(g, v, it);
         }
         //posVisit(g, v); do something after visiting the vertex
     }
@@ -164,8 +152,8 @@ void BFS(G* g, int start) {
 void Dijkstra(G* g, int s) {
     int *P = new int[g->n];
     int p, v;
+    vector<pair<int, int>>::iterator it;
     priority_queue<pair<int, pair<int,int>>, vector<pair<int, pair<int,int>>>, greater<pair<int, pair<int,int>>>> H;
-    
     for(int i = 0; i <= (n(g)-1); i++) {
         g->D[i] = numeric_limits<int>::max();
         P[i] = -1;
@@ -186,67 +174,13 @@ void Dijkstra(G* g, int s) {
         setMark(g, v, VISITED);
         P[v] = p;
         int w = first(g, v);
+        it = g->l[v].begin();
         while(w < n(g)) {
-            if(getMark(g, w) != VISITED && g->D[w] > g->D[v] + weight(g, v, w)) {
-                g->D[w] = g->D[v] + weight(g, v, w);
+            if(getMark(g, w) != VISITED && g->D[w] > g->D[v] + weight(g, it)) {
+                g->D[w] = g->D[v] + weight(g, it);
                 H.push(make_pair(g->D[w], make_pair(v, w)));    
             }
-            w = next(g, v, w);
-        }
-    }
-}
-
-void Floyd(G* g) {
-    for(int i = 0; i <= (n(g)-1); i++) {
-        for(int j = 0; j <= (n(g)-1); j++) {
-            if(i == j) {
-                g->Dm[i][j] = 0;
-            }
-            else if(weight(g, i, j) != 0) {
-                g->Dm[i][j] = weight(g, i, j);
-            }
-            else {
-                g->Dm[i][j] = numeric_limits<int>::max();
-            }
-        }
-    }
-
-    for(int k = 0; k <= (n(g)-1); k++) {
-        for(int i = 0; i <= (n(g)-1); i++) {
-            for(int j = 0; j <= (n(g)-1); j++) {
-                if(g->Dm[i][k] != numeric_limits<int>::max() && g->Dm[k][j] != numeric_limits<int>::max() && g->Dm[i][j] > g->Dm[i][k] + g->Dm[k][j]) {
-                    g->Dm[i][j] = g->Dm[i][k] + g->Dm[k][j];
-                }
-            }
-        }
-    }
-}
-
-void BellmanFord(G* g, int s) {
-    for(int i = 0; i <= (n(g)-1); i++) {
-        g->D[i] = numeric_limits<int>::max();
-    }
-    g->D[s] = 0;
-
-    for(int k = 0; k <= (n(g)-2); k++) {
-        for(int i = 0; i <= (n(g)-1); i++) {
-            int j = first(g, i);
-            while(j < n(g)) {
-                if(g->D[j] > g->D[i] + weight(g, i, j)) {
-                    g->D[j] = g->D[i] + weight(g, i, j);
-                }
-                j = next(g, i, j);
-            }
-        }
-    }
-
-    for(int i = 0; i <= (n(g)-1); i++) {
-        int j = first(g, i);
-        while(j < n(g)) {
-            if(g->D[j] > g->D[i] + weight(g, i, j)) {
-                return; // negative cycle detected
-            }
-            j = next(g, i, j);
+            w = next(g, v, it);
         }
     }
 }
@@ -254,6 +188,7 @@ void BellmanFord(G* g, int s) {
 void Prim(G* g) {
     int* V = new int[g->n];
     int p, v;
+    vector<pair<int, int>>::iterator it;
     priority_queue<pair<int, pair<int,int>>, vector<pair<int, pair<int,int>>>, greater<pair<int, pair<int,int>>>> H;
     
     for(int i = 0; i <= (n(g)-1); i++) {
@@ -276,12 +211,13 @@ void Prim(G* g) {
         setMark(g, v, VISITED);
         V[v] = p;
         int w = first(g, v);
+        it = g->l[v].begin();
         while(w < n(g)) {
-            if(getMark(g, w) != VISITED && g->D[w] > weight(g, v, w)) {
-                g->D[w] = weight(g, v, w);
+            if(getMark(g, w) != VISITED && g->D[w] > weight(g, it)) {
+                g->D[w] = weight(g, it);
                 H.push(make_pair(g->D[w], make_pair(v, w)));
             }
-            w = next(g, v, w);
+            w = next(g, v, it);
         }
     }
 }
@@ -295,7 +231,7 @@ void setEdge(G* g, int i, int j, int w) {
 
 void delEdge(G* g, int i, int j) {
     g->numEdge--;
-    int w = weight(g, i, j);
+    //int w = weight(g, i, j);
     //g->l[i].remove(make_pair(j, w));
 }
 
@@ -312,13 +248,15 @@ int getMark(G* g, int v) {
 }
 
 void toposort(G* g, int v, stack<int> &s) {
+    vector<pair<int, int>>::iterator it;
     setMark(g, v, VISITED);
     int w = first(g, v);
+    it = g->l[v].begin();
     while(w < n(g)) {
         if(getMark(g, w) == UNVISITED) {
             toposort(g, w, s);
         }
-        w = next(g, v, w);
+        w = next(g, v, it);
     }
     s.push(v);
 }
