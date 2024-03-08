@@ -40,16 +40,18 @@ void setMark(G* g, int v, int val);
 int getMark(G* g, int v);
 void toposort(G* g, int v, stack<int> &s);
 void printStack(stack<int> s); 
-//bool qns(int l, vector<vector<int>> &M);
-bool qns(int i, int** &M, int n);
+bool qns(int i, int** M, int n);
 bool valid(int** M, int l, int i, int n);
 
 
 int main(void) {
     int n;
     cin >> n;
-    //int M[n][n];
     int** M = new int*[n];
+    
+    for(int i = 0; i < n; i++) {
+        M[i] = new int[n];
+    }
 
     qns(0, M, n);
 
@@ -343,7 +345,7 @@ void printStack(stack<int> s) {
     }
 }
 
-bool qns(int l, int** &M, int n) {
+bool qns(int l, int** M, int n) {
     if(l == n) {
         return true;
     }
