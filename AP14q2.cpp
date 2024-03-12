@@ -16,19 +16,15 @@ int main(void) {
     F[0] = new int[W+1];
 
     for(int i = 1; i <= n; i++) {
-        F[i] = new int[W+1];
-        for(int j = 1; j <= W; j++) {    
-            F[i][j] = -1;
-        }
-
-    }
-
-    for(int i = 1; i <= n; i++) {
         int x, y;
         cin >> x >> y;
         w[i] = x;
         v[i] = y;
 
+        F[i] = new int[W+1];
+        for(int j = 1; j <= W; j++) {    
+            F[i][j] = -1;
+        }
     }
 
     MFKnapsack(n, W, w, v, F); // top-down knapsack
