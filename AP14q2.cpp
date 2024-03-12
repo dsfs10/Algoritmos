@@ -1,24 +1,6 @@
 #include <iostream>
-#include <list>
-#include <limits>
-#include <iterator>
-#include <queue>
-#include <stack>
 #define endl "\n"
-#define UNVISITED 0
-#define VISITED 1
 using namespace std;
-
-typedef struct g{
-    vector<pair<int, int>> *l; // adjacency list
-    int numEdge; // number of edges
-    int n; // number of vertices
-    int *Mark; // auxiliary marking array
-    int *distance;
-    int *D; // distance from a vertex to all the others
-    int **Dm; // matrix of distances
-} G;
-
 
 int max(int a, int b);
 int knapsack(int n, int W, int* w, int* v, int** F);
