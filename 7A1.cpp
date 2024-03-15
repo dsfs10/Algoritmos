@@ -1,10 +1,11 @@
 #include <iostream>
 #include <vector>
+#include <iterator>
 #define endl "\n"
 using namespace std;
 
-bool KnightsTour(int**board, int row, int col, vector<int> r, vector<int> c, int numsquares, int move);
-bool valid(int** board, int nrow, int ncol);
+bool KnightsTour(vector<vector<int>> board, int row, int col, vector<int> r, vector<int> c, int n, int numsquares, int move);
+bool valid(vector<vector<int>> board, int nrow, int ncol, int n);
 
 
 int main(void) {
@@ -13,21 +14,22 @@ int main(void) {
     vector<vector<int>> board; 
     int n, numsquares; 
     cin >> n;
-
-    for(int i = 0; i < n; i++) {
+    //board = new vector<vector<int>>;
+    vector<vector<int>>::iterator it;
+    it = board.begin();
+    for(it; it != board.end(); it++) {
         int x, y;
-        vector<int> tmp;
-        tmp.assign(x+y, 0);
         cin >> x >> y;
+        (*it).assign(x+y, 0);
         numsquares = numsquares + y;
         //board[i] = new int[x+y];
-        board[i] = tmp;
         cout << "teste" << endl;
+        //board[i] = tmp;
         for(int j = 0; j < x; j++) {
-            board[i][j] = -1;
+            (*it)[j] = -1;
         }
         for(int k = 0; k < x+y; k++) {
-            cout << board[i][k] << " ";
+            cout << (*it)[k] << " ";
         }
         cout << endl;
     }
@@ -39,7 +41,7 @@ int main(void) {
 }
 
 
-bool KnightsTour(int** board, int row, int col, vector<int> r, vector<int> c,int numsquares, int move) {
+bool KnightsTour(vector<vector<int>> board, int row, int col, vector<int> r, vector<int> c, int n, int numsquares, int move) {
     if(move == numsquares) { // 8x8 chessboard
         for(int i = 0; i < 8; i++) {
             for(int j = 0; j < 8; j++) {
@@ -54,10 +56,10 @@ bool KnightsTour(int** board, int row, int col, vector<int> r, vector<int> c,int
         for(int i = 0; i < r.size(); i++) {
             int nrow = row + r[i];
             int ncol = col + c[i];
-            if(valid(board, nrow, ncol)) {
+            if(valid(board, nrow, ncol, n)) {
                 move++;
                 board[nrow][ncol] = move;
-                if(KnightsTour(board, nrow, ncol, r, c, numsquares, move)) {
+                if(KnightsTour(board, nrow, ncol, r, c, n, numsquares, move)) {
                     return true;
                 }
                 move--;
@@ -69,8 +71,8 @@ bool KnightsTour(int** board, int row, int col, vector<int> r, vector<int> c,int
     return false;
 }
 
-bool valid(int** board, int nrow, int ncol) {
-    if((nrow >= 0) && (nrow < 8) && (ncol >= 0) && (ncol < 8) && (board[nrow][ncol] == 0)) {
+bool valid(vector<vector<int>> board, int nrow, int ncol, int n) {
+    if((nrow >= 0) && (nrow < n) && (ncol >= 0) && (ncol < board[nrow].size()) && (board[nrow][ncol] == 0)) {
         return true;
     }
     
